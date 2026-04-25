@@ -9,6 +9,9 @@ on:
 jobs:
   ingest_data:
     runs-on: ubuntu-latest
+    # future-proof the runner and remove deprecation warnings
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4 
