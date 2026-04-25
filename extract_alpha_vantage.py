@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import pandas_gbq
 from google.oauth2 import service_account
 import time
+import json 
 
 # load environment variables
 load_dotenv()
@@ -88,11 +89,19 @@ def main():
         print(f"Loading data to BigQuery table: {destination_table}...")
         
         try:
-            # retrieve path to the service account json file
-            key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+            # check for google credentials json string in environment variables (github actions)
+            sa_key_string = os.getenv("GCP_SA_KEY")
             
-            # create credentials object using json key
-            credentials = service_account.Credentials.from_service_account_file(key_path)
+            if sa_key_string:
+                # parse the json string into a dictionary
+                credentials_dict = json.loads(sa_key_string)
+                credentials = service_account.Credentials.from_service_account_info(credentials_dict)
+            else:
+                # retrieve path to the service account json file
+                key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+                
+                # create credentials object using json key
+                credentials = service_account.Credentials.from_service_account_file(key_path)
             
             # use pandas-gbq to automate schema mapping, handle BQ job submission, 
             # and append new records 
