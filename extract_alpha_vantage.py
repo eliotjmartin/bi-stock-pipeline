@@ -13,7 +13,7 @@ load_dotenv()
 API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 
 # target assets
-TICKERS = ["SPLG", "VXUS", "SPTM"]
+TICKERS = ["QQQ", "GLD", "KRE", "EEM", "ARKK"]
 
 def fetch_and_flatten(ticker):
     """Fetches daily time series data from Alpha Vantage API 
