@@ -56,11 +56,11 @@ if not df.empty:
     )
     
     st.sidebar.markdown("---")
-    st.sidebar.info("""
-    **Interpreting Results:**
-    - **Correlation > 0.80:** Assets move in lockstep.
-    - **Correlation < 0.50:** Strong diversification benefits.
-    """)
+    st.sidebar.subheader("Source Code")
+    st.sidebar.markdown(
+        "Check out the [GitHub Repository](https://github.com/eliotjmartin/bi-stock-pipeline) "
+        "to see the automated ETL pipeline and BigQuery architecture."
+    )
     
     filtered_df = df[df['ticker'].isin(symbols)]
 
@@ -132,13 +132,12 @@ if not df.empty:
 
     with tab3:
         st.subheader("Dataset Preview")
-        st.dataframe(filtered_df, width='stretch')
+        st.dataframe(filtered_df.drop(columns=['load_timestamp']), width='stretch')
 
     # pipeline health
     st.divider() 
-    pacific_time = df['load_timestamp'].dt.tz_localize('UTC').dt.tz_convert('US/Pacific')
-    last_sync_pst = pacific_time.max().strftime('%Y-%m-%d %I:%M:%S %p')
-    st.caption(f"⚙️ **Pipeline Status:** Last data sync completed at {last_sync_pst} PT via automated GitHub Actions ETL.")
+    last_sync = df['load_timestamp'].max().strftime('%Y-%m-%d %I:%M:%S %p')
+    st.caption(f"⚙️ **Pipeline Status:** Last data sync completed at {last_sync} via automated GitHub Actions ETL.")
     
 else:
     st.warning("No data found in BigQuery. Check your ingestion pipeline.")
