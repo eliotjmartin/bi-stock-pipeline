@@ -36,8 +36,10 @@ def fetch_and_flatten(ticker):
     # not mean the request was valid or that data recieved 
     if "Error Message" in data:
         print(f"API Error for {ticker}: {data['Error Message']}")
+        return pd.DataFrame()
     if "Note" in data or "Information" in data:
         print(f"Rate Limit Reached: {data.get('Note', data.get('Information'))}")
+        return pd.DataFrame()
 
     # the actual daily data (prices)
     time_series = data.get("Time Series (Daily)", {})
