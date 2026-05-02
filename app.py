@@ -12,11 +12,11 @@ with st.expander("Why these 5 ETFs?"):
     st.write("""
     This app compares five different types of investments to see how they move in relation to one another. 
     
-    * **QQQ (Big Tech):** It tracks the 100 largest tech-focused companies.
+    * **QQQ (Large-Cap Growth):** It tracks the 100 largest non-financial companies on the Nasdaq.
     * **GLD (Gold):** Gold often holds its value or goes up when the stock market is struggling.
-    * **KRE (Local Banks):** These are sensitive to interest rates, often behaving differently than the big tech giants.
-    * **EEM (Emerging Markets):** Focuses on fast-growing countries like India and Brazil, which follow their own unique economic paths.
-    * **ARKK (Moonshots):** It invests in experimental tech (like robotics), showing us the difference between steady growth and high volatility.
+    * **KRE (Regional Banking):** Focuses on mid-sized US banks. These are highly sensitive to interest rate spreads and the health of the domestic economy, often moving independently of global tech.
+    * **EEM (Emerging Markets):** Focuses on developing economies like India and Brazil. It offers high growth potential but is sensitive to swings in the US Dollar and global trade policy.
+    * **ARKK (Disruptive Innovation):** Invests in experimental tech (like robotics). It offers massive potential upside but is very volatile compared to established tech.
     
     **The Goal:** To determine which assets provide true diversification.
     """)
@@ -47,7 +47,7 @@ def load_data():
 df = load_data()
 
 if not df.empty:
-    # Sidebar Filtering
+    # sidebar filtering
     st.sidebar.header("Navigation & Filters")
     symbols = st.sidebar.multiselect(
         "Select Funds to Compare", 
@@ -87,9 +87,7 @@ if not df.empty:
 
     st.markdown("---")
 
-    # ==========================================
     # MAIN CONTENT: TABBED VIEW 
-    # ==========================================
     tab1, tab2, tab3 = st.tabs(["Price Performance", "Correlation Analysis", "Raw Data"])
 
     with tab1:
@@ -131,13 +129,15 @@ if not df.empty:
         st.plotly_chart(fig_corr, width='stretch')  # bridge between plotly and streamlit
 
     with tab3:
+        display_df = filtered_df.drop(columns=['load_timestamp'])
+        display_df['market_date'] = display_df['market_date'].dt.date # format as just date
         st.subheader("Dataset Preview")
-        st.dataframe(filtered_df.drop(columns=['load_timestamp']), width='stretch')
+        st.dataframe(display_df, width='stretch')
 
     # pipeline health
     st.divider() 
     last_sync = df['load_timestamp'].max().strftime('%Y-%m-%d %I:%M:%S %p')
-    st.caption(f"⚙️ **Pipeline Status:** Last data sync completed at {last_sync} via automated GitHub Actions ETL.")
+    st.caption(f"⚙️ **Pipeline Status:** Last data sync completed at {last_sync} UTC via automated GitHub Actions ETL.")
     
 else:
     st.warning("No data found in BigQuery. Check your ingestion pipeline.")

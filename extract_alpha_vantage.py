@@ -1,7 +1,7 @@
 import os
 import requests
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timezone
 from dotenv import load_dotenv
 import pandas_gbq
 from google.oauth2 import service_account
@@ -57,7 +57,7 @@ def fetch_and_flatten(ticker):
             "close_price": float(metrics["4. close"]),
             "volume": int(metrics["5. volume"]),
             # needed to track when data was pulled
-            "load_timestamp": datetime.now()
+            "load_timestamp": datetime.now(timezone.utc)
         })
         
     return pd.DataFrame(records)
